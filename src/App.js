@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { faker } from "@faker-js/faker";
 
 function createRandomPost() {
@@ -8,6 +8,7 @@ function createRandomPost() {
   };
 }
 
+const PostContext = createContext();
 function App() {
   const [posts, setPosts] = useState(() =>
     Array.from({ length: 30 }, () => createRandomPost())
@@ -42,46 +43,51 @@ function App() {
   );
 
   return (
-    <section>
-      <button
-        onClick={() => setIsFakeDark((isFakeDark) => !isFakeDark)}
-        className="btn-fake-dark-mode"
-      >
-        {isFakeDark ? "☀️" : "🌙"}
-      </button>
+    <PostContext.Provider
+      value={{
+        posts: searchedPosts,
+        onAddPost: handleAddPost,
+        onClearPosts: handleClearPosts,
+        searchQuery,
+        setSearchQuery,
+      }}
+    >
+      <section>
+        <button
+          onClick={() => setIsFakeDark((isFakeDark) => !isFakeDark)}
+          className="btn-fake-dark-mode"
+        >
+          {isFakeDark ? "☀️" : "🌙"}
+        </button>
 
-      <Header
-        posts={searchedPosts}
-        onClearPosts={handleClearPosts}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-      />
-      <Main posts={searchedPosts} onAddPost={handleAddPost} />
-      <Archive onAddPost={handleAddPost} />
-      <Footer />
-    </section>
+        <Header />
+        <Main />
+        <Archive onAddPost={handleAddPost} />
+        <Footer />
+      </section>
+    </PostContext.Provider>
   );
 }
 
-function Header({ posts, onClearPosts, searchQuery, setSearchQuery }) {
+function Header() {
+  const { onClearPosts } = useContext(PostContext);
+
   return (
     <header>
       <h1>
         <span>⚛️</span>The Atomic Blog
       </h1>
       <div>
-        <Results posts={posts} />
-        <SearchPosts
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-        />
+        <Results />
+        <SearchPosts />
         <button onClick={onClearPosts}>Clear posts</button>
       </div>
     </header>
   );
 }
 
-function SearchPosts({ searchQuery, setSearchQuery }) {
+function SearchPosts() {
+  const { searchQuery, setSearchQuery } = useContext(PostContext);
   return (
     <input
       value={searchQuery}
@@ -91,7 +97,8 @@ function SearchPosts({ searchQuery, setSearchQuery }) {
   );
 }
 
-function Results({ posts }) {
+function Results() {
+  const { posts } = useContext(PostContext);
   return <p>🚀 {posts.length} atomic posts found</p>;
 }
 
