@@ -60,8 +60,8 @@ function App() {
           {isFakeDark ? "☀️" : "🌙"}
         </button>
 
-        <Header />
         <Main />
+        <Header />
         <Archive onAddPost={handleAddPost} />
         <Footer />
       </section>
