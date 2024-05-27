@@ -15,7 +15,7 @@ function SlowComponent() {
 }
 
 function Counter({ children }) {
-  ////
+  /////
   const [count, setCount] = useState(0);
 
   return (
