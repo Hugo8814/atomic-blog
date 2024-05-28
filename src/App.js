@@ -31,7 +31,7 @@ function App() {
       <PostProvider>
         <Header />
         <Main />
-        <Archive show={t} />
+        <Archive />
         <Footer />
       </PostProvider>
     </section>
